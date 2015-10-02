@@ -1,0 +1,17 @@
+post_install() {
+   echo "######################################"
+   echo "#  Documentation installed in        #"
+   echo "#  HTML: /usr/share/Pythia8/htmldoc  #"
+   echo "#  PDF: /usr/share/Pythia8/pdfdoc    #"
+   echo "#  PHP: /usr/share/Pythia8/phpdoc    #"
+   echo "######################################"
+}
+
+post_update() {
+   echo "######################################"
+   echo "#  Documentation installed in        #"
+   echo "#  HTML: /usr/share/Pythia8/htmldoc  #"
+   echo "#  PDF: /usr/share/Pythia8/pdfdoc    #"
+   echo "#  PHP: /usr/share/Pythia8/phpdoc    #"
+   echo "######################################"
+}

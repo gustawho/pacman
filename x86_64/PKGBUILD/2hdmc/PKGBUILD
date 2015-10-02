@@ -1,0 +1,37 @@
+# Maintainer: Gustavo Castro < gustawho [at] gmail [dot] com >
+
+pkgname=2hdmc
+_altname=2HDMC
+pkgver=1.7.0
+pkgrel=1
+pkgdesc="General-purpose calculator for the two-Higgs doublet model."
+url="http://2hdmc.hepforge.org/"
+arch=('x86_64')
+license=('GPL2')
+depends=('gsl')
+optdepends=('sushi4physics: to calculate cross sections for Higgs production'
+            'higgsbounds: for Higgs mass constraints')
+makedepends=('gcc-fortran' 'doxygen')
+source=("http://www.hepforge.org/archive/${pkgname}/${_altname}-${pkgver}.tar.gz")
+sha512sums=('677fa907b5573f43f8f8c98668615e1c687d8b8e3a8dd275371f4dcd368f8457fc8379ab2ea73d8b7c48e89d96e57fda29441990bfe8690db655aa747fc53c50')
+install=${pkgname}.install
+
+build() {
+  cd "${srcdir}/${_altname}-${pkgver}"
+  make
+  doxygen Doxyfile
+}
+
+package() {
+  mkdir -p "${pkgdir}/usr/bin" "${pkgdir}/usr/share/doc/${_altname}" "${pkgdir}/usr/lib"
+  mkdir -p "${pkgdir}/usr/share/doc/${_altname}/latex" "${pkgdir}/usr/share/doc/${_altname}/html"
+  cd "${srcdir}/${_altname}-${pkgver}"
+  install -m755 Calc* "${pkgdir}/usr/bin/"
+  install -m755 Demo "${pkgdir}/usr/bin/"
+  install -m755 lib/* "${pkgdir}/usr/lib/"
+  install -m644 html/* "${pkgdir}/usr/share/doc/${_altname}/html/"
+  install -m644 latex/* "${pkgdir}/usr/share/doc/${_altname}/latex/"
+  install -m644 lib/lib2HDMC.a "${pkgdir}/usr/lib/lib2HDMC.a"
+}
+
+# vim:set ts=2 sw=2 et:

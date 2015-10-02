@@ -1,0 +1,36 @@
+# Maintainer: Gustavo Castro < gustawho [at] gmail [dot] com >
+
+pkgname=itcl
+pkgver=4.0.3
+pkgrel=1
+pkgdesc="Provides the extra language support needed to build large Tcl/Tk applications"
+arch=('i686' 'x86_64')
+url="http://incrtcl.sourceforge.net/"
+license=('BSD')
+makedepends=('glibc' 'tcl')
+provides=('itcl' 'tcl')
+conflicts=('itcl3' 'tcl')
+source=('http://downloads.sourceforge.net/project/incrtcl/%5Bincr%20Tcl_Tk%5D-4-source/itcl%204.0.3/itcl4.0.3.tar.gz')
+sha512sums=('9736a08f0f33e0afa677a77eb643454908531786435b73314a80d9ee211c06f037eb0de3c2c2608b728253f9ec613a601d76f16f29964eb06b667ecbb3400df4')
+
+build() {
+  cd $srcdir/itcl$pkgver
+  if [ `uname -m` = "x86_64" ]; then
+    ./configure --prefix=/usr --enable-64bit
+  else
+    ./configure --prefix=/usr
+  fi
+  make all
+}
+
+package() {
+  cd $srcdir/itcl$pkgver
+  make DESTDIR=$pkgdir install
+  install -Dm644 license.terms $pkgdir/usr/share/licenses/$pkgname/LICENSE
+  chmod 644 $pkgdir/usr/lib/itcl4.0.3/libitclstub4.0.3.a
+
+  mkdir $pkgdir/usr/include/itcl4.0.3
+  mv $pkgdir/usr/include/{itcl,itclDecls,itclInt,itclIntDecls}.h $pkgdir/usr/include/itcl4.0.3/
+  rm -rf "$pkgdir"/usr/share/man
+  rm -rf "$pkgdir"/usr/bin
+}

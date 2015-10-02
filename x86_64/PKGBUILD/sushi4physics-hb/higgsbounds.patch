@@ -1,0 +1,10 @@
+17,18c17,18
+< FHPATH = ../FeynHiggs-2.10.2
+< FHVERSION = 2.10.2
+---
+> FHPATH = /usr
+> FHVERSION = 2.11.2
+20c20
+< HBPATH = ../HiggsBounds-4.1.3
+---
+> HBPATH = /usr/share/higgsbounds

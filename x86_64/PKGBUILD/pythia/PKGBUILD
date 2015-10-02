@@ -1,0 +1,52 @@
+# Maintainer: Gustavo Castro < gustawho [at] gmail [dot] com >
+# Contributor: Thomas Dziedzic < gostrc at gmail >
+# Contributor: T.Cunly
+
+pkgname=pythia
+_altname=pythia8
+pkgver=8.2.12
+_altver=8212
+pkgrel=1
+pkgdesc='An event generator for a large number of physics processes.'
+arch=('i686' 'x86_64')
+url='http://home.thep.lu.se/~torbjorn/Pythia.html'
+license=('LGPL')
+depends=('gcc-fortran')
+makedepends=('p7zip')
+source=("http://home.thep.lu.se/~torbjorn/${_altname}/pythia${_altver}.tgz")
+sha512sums=('b25669f79b171a4cda10c57b3e9356d5fc8c2c3cfb767c675295d19e47661e11d6d075d87885b11818abdeae823f288c2b64e661ebcfc448e102739fb6eb39ed')
+install=${pkgname}.install
+
+build() {
+  cd $srcdir   
+  tar xvzf pythia${_altver}.tgz
+  cd pythia${_altver}
+  if [ `uname -m` = "x86_64" ]; then
+    ./configure --prefix=/usr --enable-shared --enable-64bit
+  else
+    ./configure --prefix=/usr --enable-shared
+  fi
+  make
+}
+
+package() {
+  cd $srcdir/pythia${_altver}
+
+  install -D -m755 bin/pythia8-config ${pkgdir}/usr/bin/pythia8-config
+  install -D -m644 lib/libpythia8.a ${pkgdir}/usr/lib/libpythia8.a
+
+  mkdir -p ${pkgdir}/usr/include/Pythia8
+  mkdir -p ${pkgdir}/usr/include/Pythia8Plugins
+  mkdir -p ${pkgdir}/usr/share/Pythia8
+
+  cp -r include/Pythia8 ${pkgdir}/usr/include/
+  cp -r include/Pythia8Plugins ${pkgdir}/usr/include/
+  cp -r share/Pythia8 ${pkgdir}/usr/share/
+  cp -r examples ${pkgdir}/usr/share/Pythia8
+
+  find ${pkgdir}/ -type d -exec chmod 755 {} \;
+  find ${pkgdir}/usr/share -type f -exec chmod 644 {} \;
+  find ${pkgdir}/usr/include -type f -exec chmod 664 {} \;
+
+  ln -s /usr/lib/libpythia8.a ${pkgdir}/usr/lib/libpythia.a
+}

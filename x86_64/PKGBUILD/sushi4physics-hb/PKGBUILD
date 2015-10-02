@@ -1,0 +1,37 @@
+# Maintainer: Gustavo Castro < gustawho [at] gmail [dot] com >
+
+pkgname=sushi4physics-hb
+_srcname=SusHi
+pkgver=1.5.0
+pkgrel=1
+pkgdesc="Higgs production in the MSSM (HiggsBounds support)"
+url="http://sushi.hepforge.org/"
+arch=('x86_64')
+license=('GPL2')
+depends=('lhapdf' 'higgsbounds' 'feynhiggs')
+makedepends=('gcc-fortran')
+provides=('sushi4physics')
+conflicts=('sushi4physics-2hdmc' 'sushi4physics-fh' 'sushi4physics')
+source=("http://www.hepforge.org/archive/sushi/${_srcname}-${pkgver}.tar.gz"
+        "higgsbounds.patch")
+sha512sums=('55bc1c48bc856708f3cff1740abaee5cad8940a089173545719c0f26fbc836ace98a025335000396aaba9c193a8870e8dcaa25cc9b8e88f43c1d46f30d737553'
+            'b77cccfa445f258d51b59ffa86d1d75ac5f83a97da9581cfdec3167c4884e1c919a9b80578b8b2cbaae8e89a06e4fba62cca5055bed0650f8a50efc30c30fd2a')
+
+build() {
+  patch "${srcdir}/${_srcname}-${pkgver}/Makefile" < "${srcdir}/higgsbounds.patch"
+  cd "${srcdir}/${_srcname}-${pkgver}"
+  ./configure --prefix=/usr
+  make predef=HB
+}
+
+package() {
+  mkdir -p "${pkgdir}/usr/bin" "${pkgdir}/usr/lib"
+  cd "${srcdir}/${_srcname}-${pkgver}"
+  install -m755 bin/sushi.HB "${pkgdir}/usr/bin/sushi.HB"
+  install -m644 lib/libshare.a "${pkgdir}/usr/lib/libshare.a"
+  install -m644 lib/libsushiHB.a "${pkgdir}/usr/lib/libsushiHB.a"
+  ln -s /usr/bin/sushi.HB "${pkgdir}/usr/bin/sushi"
+  ln -s /usr/lib/libsushiHB.a "${pkgdir}/usr/lib/libsushi.a"
+}
+
+# vim:set ts=2 sw=2 et:
